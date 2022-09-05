@@ -13,7 +13,7 @@ class ThrowLog(BaseModel):
         return self.num_scored / max(self.num_scored + self.num_missed, 1)
 
 
-class Player(ClassInDB):
+class PlayerInDB(ClassInDB):
     name: str
     throws: Dict[str, ThrowLog] = Field(default_factory=list)
 
