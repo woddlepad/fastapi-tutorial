@@ -1,7 +1,6 @@
 from datetime import date, timedelta
-import os
 from typing import List
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 
 from first_api.forms.player import (
     CreatePlayerForm,
@@ -14,12 +13,7 @@ router = APIRouter()
 
 @router.get("/player/all", response_model=List[PlayerInDB])
 def get_players():
-    file_names = os.listdir("data")
-    players = []
-    for file_name in file_names:
-        if file_name.endswith(".json"):
-            players.append(PlayerInDB.read(file_name[:-5]))
-    return players
+    return PlayerInDB.read_all()
 
 
 @router.get("/player", response_model=PlayerInDB)
@@ -30,7 +24,13 @@ def get_player(id: str):
 @router.post("/player/create", response_model=PlayerInDB)
 def add_player(form_data: CreatePlayerForm):
     player = PlayerInDB(id=form_data.name, name=form_data.name)
-    player.save()
+    try:
+        player.save(overwrite=False)
+    except ValueError:
+        raise HTTPException(
+            405,
+            f"Player with name {form_data.name} already exists. Choose a different name.",
+        )
     return player
 
 
