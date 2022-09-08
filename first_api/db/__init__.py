@@ -33,7 +33,7 @@ class ClassInDB(BaseModel):
         db_folder = get_db_folder()
         file_names = os.listdir(f"{db_folder}/{cls_name}")
 
-        return [cls.read(file_name) for file_name in file_names]
+        return [cls.read(file_name[:-5]) for file_name in file_names]
 
     @classmethod
     def read(cls: type[Self], id: str):  # type: ignore
