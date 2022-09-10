@@ -15,3 +15,8 @@ class RegisterThrowsForm(BaseModel):
     id: str
     num_scored: int = Field(ge=0)
     num_missed: int = Field(ge=0)
+
+
+class RankingResult(BaseModel):
+    name: str
+    num_scored: int

@@ -4,6 +4,7 @@ from fastapi import APIRouter, HTTPException
 
 from first_api.forms.player import (
     CreatePlayerForm,
+    RankingResult,
     RegisterThrowsForm,
 )
 from first_api.schemas.player import PlayerInDB, PlayerStats, ThrowLog
@@ -19,6 +20,21 @@ def get_players():
 @router.get("/player", response_model=PlayerInDB)
 def get_player(id: str):
     return PlayerInDB.read(id)
+
+
+@router.get("/player/rankings", response_model=List[RankingResult])
+def get_ranking():
+    players = PlayerInDB.read_all()
+    logs = [
+        player.get_thow_log(start_date=date(1970, 1, 1), end_date=date.today())
+        for player in players
+    ]
+    rankings = [
+        RankingResult(name=player.name, num_scored=log.num_scored)
+        for player, log in zip(players, logs)
+    ]
+    rankings = sorted(rankings, key=lambda r: r.num_scored, reverse=True)
+    return rankings
 
 
 @router.post("/player/create", response_model=PlayerInDB)
