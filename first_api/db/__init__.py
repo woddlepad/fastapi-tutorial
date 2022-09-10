@@ -2,6 +2,7 @@ import json
 import os
 from typing import Any, Dict, TypeVar
 from typing_extensions import Self
+from uuid import uuid4
 from pydantic import BaseModel, Field, parse_obj_as
 
 
@@ -13,7 +14,7 @@ def get_db_folder():
 
 
 class ClassInDB(BaseModel):
-    id: str
+    id: str = Field(default_factory=lambda: str(uuid4()))
 
     def save(self, overwrite: bool = True):
         db_folder = get_db_folder()
