@@ -39,3 +39,8 @@ def create_question(form_data: CreateQuestionForm):
             f"Question with name {form_data.name} already exists. Choose a different name.",
         )
     return question
+
+
+@router.get("/", response_model=List[QuestionInDB])
+def get_questions():
+    return QuestionInDB.read_all()
